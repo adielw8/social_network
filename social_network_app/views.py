@@ -34,12 +34,13 @@ class UserCreateAPIView(generics.CreateAPIView):
 
 
 class PostViewSet(viewsets.ModelViewSet):
-    serializer_class = PostSerializer
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        post = serializer.save(user=self.request.user)
+        Like.objects.create(post=post)
+        UnLike.objects.create(post=post)
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
@@ -49,31 +50,36 @@ class LikeViewSet(generics.GenericAPIView):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
 
-    def post(self):
+    def post(self, *args, **kwargs):
         user = self.request.user
-        un_liked_posts = UnLike.objects.get()
-        liked_posts = Like.objects.get()
-
+        post_id = self.request.POST.get('post')
+        un_liked_posts = UnLike.objects.get(post_id=post_id)
+        liked_posts = Like.objects.get(post_id=post_id)
         if user not in liked_posts.like.all():
             if user in un_liked_posts.un_like.all():
                 un_liked_posts.un_like.remove(user)
             liked_posts.like.add(user)
             return Response()
-        return Response({'message': 'You already liked this post..'})
+        else:
+            liked_posts.like.remove(user)
+            return Response()
 
 
 class UnLikeViewSet(generics.GenericAPIView):
     queryset = UnLike.objects.all()
     serializer_class = UnLikeSerializer
 
-    def post(self):
+    def post(self, *args, **kwargs):
         user = self.request.user
-        un_liked_posts = UnLike.objects.get()
-        liked_posts = Like.objects.get()
+        post_id = self.request.POST.get('post')
+        un_liked_posts = UnLike.objects.get(post_id=post_id)
+        liked_posts = Like.objects.get(post_id=post_id)
 
-        if user not in un_liked_posts.like.all():
-            if user in liked_posts.un_like.all():
-                liked_posts.un_like.remove(user)
-            un_liked_posts.like.add(user)
+        if user not in un_liked_posts.un_like.all():
+            if user in liked_posts.like.all():
+                liked_posts.like.remove(user)
+            un_liked_posts.un_like.add(user)
             return Response()
-        return Response({'message': 'You already un_liked this post..'})
+        else:
+            un_liked_posts.un_like.remove(user)
+            return Response()

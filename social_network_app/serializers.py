@@ -14,7 +14,6 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Email address is already registered")
         return lower_email
 
-
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'last_name', 'password']
@@ -31,12 +30,12 @@ class LikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Like
-        fields = ['post']
+        fields = ['post', 'id']
 
 
 class UnLikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UnLike
-        fields = ['post']
+        fields = ['post', 'id']
 
