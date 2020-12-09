@@ -68,3 +68,30 @@ rules:
     **requirement.**
 
 
+
+### Installation
+
+Download project
+```sh
+git clone https://github.com/adielw8/social_network.git
+$ cd social_network
+```
+Install virtual environment
+```sh
+$ sudo apt install python3-venv
+$ python3 -m venv venv
+$ source venv/bin/activate
+```
+Install requirements...
+```sh
+$ pip install -r requirements.txt
+```
+
+## Usage
+
+```sh
+python manage.py runserver
+python bot.py
+```
+
+
