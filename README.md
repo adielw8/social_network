@@ -8,6 +8,7 @@ Basic models:
 
 - User
 - Post (always made by a user)
+
 Basic features:
 - user signup
 - user login
